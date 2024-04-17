@@ -1,0 +1,35 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage[colorinlistoftodos]{todonotes}
+\pagestyle{empty}
+
+\title{Word ladders report}
+\author{Author 1 and Author 2}
+
+\begin{document}
+  \maketitle
+
+  \section{Results}
+
+  \todo[inline]{Briefly comment the results, did the script say all your solutions were correct? Approximately how long time does it take for the program to run on the largest input? What takes the majority of the time?}
+	All came back correct, the longdest took approx 5 sec. I guees the longest time is to make the network, you have to check all the nodes in the cluster twoise.
+  \section{Implementation details}
+
+  \todo[inline]{How did you implement the solution? Which data structures were used? Which modifications to these data structures were used? What is the overall running time? Why?}
+	I made subclasses called node which have array with the string and a array of node to its connections. 
+\end{document}
+• How do you represent the problem as a graph, and how is the graph built?
+	I use nodes which has a diretional element to it so diffrent nodes can be connected in diffrent directions. So when you go through the graph it works diffrent in diffrent directions
+• If one were to perform backtracking (find the path along which we went), how would that be done?
+	du sättar att noder är förälder till andra noder
+	//It would be harder, instead of looking at the current node and its connectins you would have to look at the current nodes connections connections and see if the current node is in there, (one layer deeper)
+• What is the time complexity, and more importantly why?
+	O(n+m) där n är antal noder och m är antal kanter, detta är eftersom att vi kommer aldrig behöver besöka en node flera gånger men för varje node kommer vi behöva undersöka alla des grannar, alltså kommer vi får n stycker * antal kanter noden har
+	Detta ger en summa på m och om man se som att kolla om n är slutpunkten räknas det som n, tillsamman blir det n + m. 
+• Is it possible to solve the problem with DFS: why or why not?
+	jag tror inte det då man inte kan få någon distans mellan start och slut utan endast start och djupaset delen av grafen. 
+• Can you think of any applications of this? Of BFS/DFS in general?
+	Jag gissar att både algoritmerna kan ge en ide om strukturen a grafen, hitta snabbaste vägen mellan två punkter på en karta om man vet alla väggar och korsningar 

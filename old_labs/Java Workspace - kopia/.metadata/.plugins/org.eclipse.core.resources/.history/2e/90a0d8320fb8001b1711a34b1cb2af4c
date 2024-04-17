@@ -1,0 +1,52 @@
+import java.text.DecimalFormat;
+import java.util.Scanner;
+
+public class Lab4 {
+
+	public static void main(String[] args) {
+		
+		Scanner scan = new Scanner(System.in);
+		
+		int N = scan.nextInt();
+		Point[] vec = new Point[N];
+		for(int i = 0; i < N; i++) {
+			vec[i] = new Point(scan.nextInt(),scan.nextInt());
+		}
+		
+		double ans = closestPoint(N,vec);
+		
+		DecimalFormat df = new DecimalFormat("###.######");
+		
+		System.out.println(df.format(dist(vec[0],vec[1])));
+	}
+	
+	public static double closestPoint(int a,Point[] ve) {
+		return -1;
+	}
+	
+	public static double dist(Point p1, Point p2) {
+		return Math.sqrt((p1.getX()-p2.getX())^2 + (p1.getY()-p2.getY())^2);
+	}
+}
+
+class Point {
+	private int x;
+	private int y;
+	
+	public Point(int a, int b) {
+		x = a;
+		y = b;
+	}
+	
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
+	
+	public String toString() {
+		return x + " " + y;
+	}
+}

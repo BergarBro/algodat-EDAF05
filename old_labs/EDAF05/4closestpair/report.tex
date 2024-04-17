@@ -1,0 +1,33 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage[colorinlistoftodos]{todonotes}
+\pagestyle{empty}
+
+\title{Closest Pair Report}
+\author{Author 1 and Author 2}
+
+\begin{document}
+  \maketitle
+
+  \section{Results}
+
+  \todo[inline]{Briefly comment the results, did the script say all your solutions were correct? Approximately how long time does it take for the program to run on the largest input? What takes the majority of the time?}
+
+  \section{Implementation details}
+
+  \todo[inline]{How did you implement the solution? Which data structures were used? Which modifications to these data structures were used? What is the overall running time? Why?}
+
+\end{document}
+
+• What is the time complexity, and more importantly why?
+	O(n log n), det kan man få av huvudsatsen, eftersom att vårt system är baserat på T(n) = 2T(n/2) + k*n där k är begränsat. => T(n) = O(n log n)
+• Why is it sufficient to check a few points along the mid line?
+	Eftersom att punkterna som befiner sig längre bort från mittlinjen är automastisk längre än den sudo-minsta delta som vi approximerade först, sedan behöver man inte kolla all punkter kring mittlinjen heller
+	eftersom att efter ett antal punker kommer dem också dem vara automatiskt längre bort än minsta delta 
+• Draw a picture and show/describe when each distance is checked in your solution!
+	se exempel 1
+• When do you break the recursion and use brute force?
+	för n = 2 sätter jag direct att delta är distansen mellan punkterna och för n = 3 kollar jag alla tre kombinationer av distanser och tar den minska som delta

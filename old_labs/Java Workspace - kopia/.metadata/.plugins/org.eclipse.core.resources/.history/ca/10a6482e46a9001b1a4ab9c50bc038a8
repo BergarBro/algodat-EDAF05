@@ -1,0 +1,19 @@
+import java.util.Scanner;
+
+public class Lab3 {
+
+	public static void main(String args[]) {
+		Scanner scan = new Scanner(System.in);
+		
+		int N = scan.nextInt();
+		int M = scan.nextInt();
+		
+		String s = "";
+		
+		for (int i = 0; i < M*3; i++ ) {
+			s = s + scan.nextInt();
+		}
+		
+		System.out.print(s);
+	}	
+}

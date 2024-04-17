@@ -1,0 +1,36 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage[colorinlistoftodos]{todonotes}
+\pagestyle{empty}
+
+\title{Making Friends Report}
+\author{Author 1 and Author 2}
+
+\begin{document}
+  \maketitle
+
+  \section{Results}
+
+  \todo[inline]{Briefly comment the results, did the script say all your solutions were correct? Approximately how long time does it take for the program to run on the largest input? What takes the majority of the time?}
+	ca 14 sekunder tog det 
+  \section{Implementation details}
+
+  \todo[inline]{How did you implement the solution? Which data structures were used? Which modifications to these data structures were used? What is the overall running time? Why?}
+	Jag implementerade min egna Heap som användes för att hitta den kortaste kanten
+\end{document}
+
+• Why does the algorithm you have implemented produce a minimal spanning tree?
+	om vi tänker att det finns en väg som är kortare kommer vår algoritm automatisk hitta den först 
+• What is the time complexity, and more importantly why?
+	O(m*log(n))
+• What happens if one of the edges you have chosen to include collapses? Might there be any problems with that
+in real applications?
+	Om detta händer kommer trädet att dela up sig i två delar och inte vara sammankopplat längre, man skulle kunna lösa det genom att hitta den billigast vägen som sammankopplar dem igen, tror inte att den är MST
+• Can you think of any real applications of MST? What would the requirements of a problem need to be in order
+for us to want MST as a solution?
+	Den klassiska är ju att koppla ihop hus med respektive resurser som vatten, el, internet ect.
+	Annars kan jag tänka mig att man kör roadtrip i USA
+	

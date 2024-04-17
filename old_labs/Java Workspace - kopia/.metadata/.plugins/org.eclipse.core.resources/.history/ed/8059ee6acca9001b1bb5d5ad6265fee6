@@ -1,0 +1,202 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Lab3 {
+
+	public static void main(String args[]) {
+		Scanner scan = new Scanner(System.in);
+		
+		int N = scan.nextInt();
+		int M = scan.nextInt();
+		Heap que = new Heap(N);
+		
+		Vertex[] list = new Vertex[N];
+		for (int i = 0; i < N; i++) {
+			list[i] = new Vertex(i);
+		}
+		
+		for (int i = 0; i < M; i++ ) {								//nodes start from 0 to N-1
+			int s = scan.nextInt();
+			int e = scan.nextInt();
+			int w = scan.nextInt();
+			list[s-1].addEdge(new Edge(list[e-1],w));
+			list[e-1].addEdge(new Edge(list[s-1],w));
+		}
+		int sum = 0;
+		list[0].setDist(0);
+		que.add(list[0]);
+		while (que.getSize() != 0) {
+			Vertex temp = que.getSmall();
+			sum += temp.getDist();
+			temp.setStat(true);
+			for (Edge e : temp.getList()) {
+				if (!e.getPoint().getStat()) {
+					if (e.getPoint().getDist() == Integer.MAX_VALUE) {
+						e.getPoint().setDist(e.getWeight());
+						que.add(e.getPoint());
+					} else if (e.getPoint().getDist() > e.getWeight()) {
+						e.getPoint().setDist(e.getWeight());
+						que.organizeUp(e.getPoint());
+					}
+				}
+			}
+			
+		}
+		System.out.println(sum);
+	}	
+}
+class Edge {
+	
+	private Vertex pointer;						// Connection Points
+	private int w;								// weight
+	
+	public Edge(Vertex p, int weight) {
+		pointer = p;
+		w = weight;
+	}
+	
+	public int getWeight() {
+		return w;
+	}
+	
+	public Vertex getPoint() {
+		return pointer;
+	}
+}
+
+class Vertex {
+	
+	private int index;
+	private ArrayList<Edge> list;
+	private int dist;
+	private boolean inTree;
+	
+	public Vertex(int i) {
+		index = i;
+		dist = Integer.MAX_VALUE;
+		inTree = false;
+		list = new ArrayList<>();
+	}
+	
+	public int getIndex() {							// from 0 to N-1
+		return index;
+	}
+	
+	public int getDist() {
+		return dist;
+	}
+	
+	public void setDist(int d) {
+		dist = d;
+	}
+	
+	public void addEdge(Edge e) {
+		list.add(e);
+	}
+	
+	public void setStat(boolean c) {
+		inTree = c;
+	}
+	
+	public boolean getStat() {
+		return inTree;
+	}
+	
+	public ArrayList<Edge> getList() {
+		return list;
+	}
+}
+
+class Heap {
+	
+	private Vertex[] array;
+	private int size;
+	private int[] sort;
+	
+	public Heap(int s) {
+		array = new Vertex[s];
+		size = 0;
+		sort = new int[s];
+	}
+	
+	public int getSize() {
+		return size;
+	}
+	
+	public void add(Vertex e) {
+		array[size] = e;
+		sort[e.getIndex()] = size;
+		organizeUp(size);
+		size++;
+	}
+	
+	public Vertex getSmall() {
+		Vertex temp = array[0];
+		array[0] = array[size-1];
+		size--;
+		organizeDown(0);
+		return temp;
+	}
+	
+	public Vertex peekVertex(int index) {
+		int i = 0;
+		Vertex temp = array[i];
+		array[i] = array[size];
+		size--;
+		organizeDown(i);
+		return temp;
+	}
+	
+	private void organizeUp(int index) {
+		int i = index;
+		while (array[i].getDist() < array[getParent(i)].getDist() && i != 0) {
+			swap(i,getParent(i));
+			i = getParent(i);
+		}
+	}
+	
+	public void organizeUp(Vertex v) {
+		int i = sort[v.getIndex()];
+		organizeUp(i);
+	}
+	
+	private void organizeDown(int index) {
+		int i = index;
+		while (getLeft(i) < size) {
+			int min = getLeft(i);
+			int minW = array[min].getDist();
+			if (minW > array[getRight(i)].getDist() && getRight(i) < size) {
+				min = getRight(i);
+				minW = array[min].getDist();
+			}
+			if (minW < array[i].getDist()) {
+				swap(i,min);
+				i = min;
+			} else {
+				break;
+			}
+		}
+	}
+	
+	private int getParent(int i) {
+		return Math.max(Math.floorDiv((i-1), 2),0);
+	}
+	
+	private int getLeft(int i) {
+		return (i*2) + 1;
+	}
+	
+	private int getRight(int i) {
+		return (i*2) + 2;
+	}
+	
+	private void swap(int i1, int i2) {
+		Vertex temp = array[i1];
+		array[i1] = array[i2];
+		array[i2] = temp;
+		int tempI = sort[temp.getIndex()];
+		sort[temp.getIndex()] = sort[array[i2].getIndex()];
+		sort[array[i2].getIndex()] = tempI;
+		
+	}
+}

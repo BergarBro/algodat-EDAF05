@@ -1,0 +1,34 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage[colorinlistoftodos]{todonotes}
+\pagestyle{empty}
+
+\title{Stable Matching Report}
+\author{Author 1 and Author 2}
+
+\begin{document}
+  \maketitle
+
+  \section{Results}
+
+  \todo[inline]{Briefly comment the results, did the script say all your solutions were correct? Approximately how long time does it take for the program to run on the largest input? What takes the majority of the time?}
+	All inputs said it was correct. 5testhuegmessy.in took approximatley 17 seconds where 8 sec for inputdata and 9 sec for checking the answer.
+  \section{Implementation details}
+
+  \todo[inline]{How did you implement the solution? Which data structures were used? Which modifications to these data structures were used? What is the overall running time? Why?}
+	I made a subclass called "Opinion" with atrebutes like int index and array of int[] preferences. O(n^2), 
+\end{document}
+• Why does your algorithm obtain a stable solution?
+	Because we check for each students first chose and then go downwards, if a student wants to switch it is with somewone that we have compared before and that means that the job that the student wants has a better match,
+	so does not want to switch, same can be said for the jobs
+• Could there be other stable solutions? Do you have an example/proof of uniqueness?
+	Yes, but not for this algorithm. This algorithm always produces (m,best(m)), which is uniq
+• What is the time complexity and why?
+	In worst case will the every student have to check every on of the preferences so because there are N student with N preferences will it be O(n^2)
+• Is this (the algorithm) how matching is performed in real life? If not, what flaws does it have?
+	I think that in real life their is bigger complexitys then juste one simple preference list, 
+• Are there any applications of the algorithm (as it is or in a slightly shifted version)?
+	maybe for rescourse allocation or auction perhaps

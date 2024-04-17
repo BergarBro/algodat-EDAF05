@@ -1,0 +1,111 @@
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Lab4 {
+
+	public static void main(String[] args) {
+		
+		Scanner scan = new Scanner(System.in);
+		
+		int N = scan.nextInt();
+		ArrayList<Point> Px = new ArrayList<Point>(N);
+		ArrayList<Point> Py = new ArrayList<Point>(N);
+		for(int i = 0; i < N; i++) {
+			Point temp = new Point(scan.nextInt(),scan.nextInt());
+			Px.add(temp);
+			Py.add(temp);
+		}
+		
+		Px.sort((p1,p2) -> {
+			int ans = p1.getX()-p2.getX();
+			if (ans == 0) {
+				return p1.getY()-p2.getY();
+			}else {
+				return ans;
+			}			 
+		});
+		
+		Py.sort((p1,p2) -> {
+			int ans = p1.getY()-p2.getY();
+			if (ans == 0) {
+				return p1.getX()-p2.getX();
+			}else {
+				return ans;
+			}
+		});
+		
+		double ans = closestPoint(Px,Py,N);
+		
+		DecimalFormat df = new DecimalFormat("###.######");
+		
+		System.out.println(df.format(ans));
+	}
+	
+	public static double closestPoint(ArrayList<Point> Px, ArrayList<Point> Py, int N) {
+		int half = Math.floorDiv(N, 2) + 1;
+		Point[] Lx = new Point[half];
+		Point[] Rx = new Point[N-half];
+		Point[] Ly = new Point[half];
+		Point[] Ry = new Point[N-half];
+		int l = 0;
+		int r = 0;
+		boolean check = false;
+		for (int i = 0; i < N; i++) {
+			if (check || i == half) {
+				Rx[r] = Px.get(i);
+				r++;
+				check = true;
+			}else {
+				Lx[l] = Px.get(i);
+				l++;
+			}
+		}
+		
+		int midx = Lx[half-1].getX();
+		int midy = Lx[half-1].getY();
+		
+		l = 0;
+		r = 0;
+		for (int i = 0; i < N; i++) {
+			if (Py.get(i).getX() < midx) {
+				Ly[l] = Py.get(i);
+				l++;
+			}else if (Py.get(i).getX() == midx && Py.get(i).getY() <= midy) {
+				Ly[l] = Py.get(i);
+				l++;			
+			}else {
+				Ry[r] = Py.get(i);
+				r++;
+			}
+		}
+		
+		return -1;
+	}
+	
+	public static double dist(Point p1, Point p2) {
+		return Math.sqrt((p1.getX()-p2.getX())^2 + (p1.getY()-p2.getY())^2);
+	}
+}
+
+class Point {
+	private int x;
+	private int y;
+	
+	public Point(int a, int b) {
+		x = a;
+		y = b;
+	}
+	
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
+	
+	public String toString() {
+		return x + " " + y;
+	}
+}
