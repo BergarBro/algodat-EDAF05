@@ -1,0 +1,11 @@
+touch hej1.txt
+touch hej2.txt
+echo "hej" > hej1.txt
+if diff hej1.* hej2.*
+then
+echo "inte samma"
+else
+echo "samma"
+fi
+
+rm hej1.txt hej2.txt
