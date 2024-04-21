@@ -47,7 +47,7 @@ public class GS {
 		Collections.sort(job);							// Sorting the jobs for easy allocating later
 														// .sort() has O(n log(n)) so it does not effect the overall O()
 		
-		while (stud.size() != 0) {						//start Implemented Gale–Shapley algorithm
+		while (stud.size() != 0) {						//start Implemented Galeï¿½Shapley algorithm
 			Opinion m = stud.remove(stud.size() - 1);			// Get first Student M
 			Opinion w = job.get(m.getNextPref() - 1);			// Get M:s first unchecked preference Job W
 			m.addCount();										// Annotate that M has been check one more time
