@@ -48,12 +48,16 @@ int main(){
             cout << students.size() << " stud size pre" << std::endl;
             students.push_back(op);
             cout << students.size() << " stud size past" << std::endl;
+            printVector(students.at(0).getPrefVector());
         }
     }
+    cout << students.size() << " stud size after loop" << std::endl;
+    cout << students.at(0).getIndex();
+
     cout << "hejsan";
     //std::sort(companies.begin(),companies.end());
 
-    while(students.size() != 0){
+    while(false){//students.size() != 0){
         OpinionList stud = *students.erase(students.begin());
         
         OpinionList comp = companies.at(stud.getNextPref() - 1);
