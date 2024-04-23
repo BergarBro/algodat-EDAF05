@@ -51,16 +51,18 @@ int main(){
             printVector(students.at(0).getPrefVector());
         }
     }
-    cout << students.size() << " stud size after loop" << std::endl;
-    cout << students.at(0).getIndex();
+    cout << students.size() << " stud size aftjkhfgdsilfahsyifder loop" << std::endl;
+    //cout << students.at(0).getIndex();
 
-    cout << "hejsan";
+    cout << "hejsan" << std::endl;
     //std::sort(companies.begin(),companies.end());
 
-    while(false){//students.size() != 0){
+    while(students.size() != 0){
+        cout << "hejsan1" << std::endl;
         OpinionList stud = *students.erase(students.begin());
-        
+        cout << stud.getNextPref() << " " << stud.getCount() << std::endl;
         OpinionList comp = companies.at(stud.getNextPref() - 1);
+        cout << "hejsan3" << std::endl;
         stud.addCount();
 
         if(comp.getPair() == nullptr){

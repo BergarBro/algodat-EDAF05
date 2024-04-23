@@ -39,6 +39,8 @@ class OpinionList{
     
     void addCount(){ count++; }
 
+    int getCount(){return count;}
+
     int getNextPref(){ return pref.at(count); }
 
     vector<int> getPrefVector(){return pref;}
