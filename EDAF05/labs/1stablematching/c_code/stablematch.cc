@@ -10,13 +10,13 @@ using std::cin;
 using std::string;
 using std::vector;
 
-void printVector(vector<int> v){
-    int size = v.size();
-    for(int i = 0; i < size; i++){
-        cout << v.at(i) << " ";
-    }
-    cout << std::endl;
-}
+// void printVector(vector<int> v){
+//     int size = v.size();
+//     for(int i = 0; i < size; i++){
+//         cout << v.at(i) << " ";
+//     }
+//     cout << std::endl;
+// }
 
 int main(){
     int N;
@@ -41,28 +41,28 @@ int main(){
 
         if(std::find(companies.begin(),companies.end(),op) == companies.end()){
             op.invertPref();
-            cout << companies.size() << " comp size pre" << std::endl;
+            //cout << companies.size() << " comp size pre" << std::endl;
             companies.push_back(op);
-            cout << companies.size() << " comp size past" << std::endl;
+            //cout << companies.size() << " comp size past" << std::endl;
         }else{
-            cout << students.size() << " stud size pre" << std::endl;
+            //cout << students.size() << " stud size pre" << std::endl;
             students.push_back(op);
-            cout << students.size() << " stud size past" << std::endl;
-            printVector(students.at(0).getPrefVector());
+            //cout << students.size() << " stud size past" << std::endl;
+            //printVector(students.at(0).getPrefVector());
         }
     }
-    cout << students.size() << " stud size aftjkhfgdsilfahsyifder loop" << std::endl;
+    //cout << students.size() << " stud size after loop" << std::endl;
     //cout << students.at(0).getIndex();
 
-    cout << "hejsan" << std::endl;
+    //cout << "hejsan" << std::endl;
     //std::sort(companies.begin(),companies.end());
 
     while(students.size() != 0){
-        cout << "hejsan1" << std::endl;
+        //cout << "hejsan1" << std::endl;
         OpinionList stud = *students.erase(students.begin());
-        cout << stud.getNextPref() << " " << stud.getCount() << std::endl;
+        //cout << stud.getNextPref() << " " << stud.getCount() << std::endl;
         OpinionList comp = companies.at(stud.getNextPref() - 1);
-        cout << "hejsan3" << std::endl;
+        //cout << "hejsan3" << std::endl;
         stud.addCount();
 
         if(comp.getPair() == nullptr){
