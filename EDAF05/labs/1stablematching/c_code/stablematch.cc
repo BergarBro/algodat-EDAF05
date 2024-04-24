@@ -22,8 +22,10 @@ int main(){
     int N;
     cin >> N;
     
-    vector<OpinionList> companies;
-    vector<OpinionList> students;
+    vector<OpinionList> companies(N);
+    vector<OpinionList> students(N);
+    vector<int> studIndex;
+    vector<int> studCompPair(N);
 
     for (int i = 0; i < (N*2); i++){
         int index;
@@ -42,11 +44,12 @@ int main(){
         if(std::find(companies.begin(),companies.end(),op) == companies.end()){
             op.invertPref();
             //cout << companies.size() << " comp size pre" << std::endl;
-            companies.push_back(op);
+            companies.at(index - 1) = op;
             //cout << companies.size() << " comp size past" << std::endl;
         }else{
             //cout << students.size() << " stud size pre" << std::endl;
-            students.push_back(op);
+            students.at(index - 1) = op;
+            studIndex.push_back(index);
             //cout << students.size() << " stud size past" << std::endl;
             //printVector(students.at(0).getPrefVector());
         }
@@ -57,29 +60,40 @@ int main(){
     //cout << "hejsan" << std::endl;
     //std::sort(companies.begin(),companies.end());
 
-    while(students.size() != 0){
+    while(studIndex.size() != 0){
         //cout << "hejsan1" << std::endl;
-        OpinionList stud = *students.erase(students.begin());
+        OpinionList& stud = students.at(studIndex.back() - 1);
+        studIndex.pop_back();
         //cout << stud.getNextPref() << " " << stud.getCount() << std::endl;
-        OpinionList comp = companies.at(stud.getNextPref() - 1);
+        OpinionList& comp = companies.at(stud.getNextPref() - 1);
         //cout << "hejsan3" << std::endl;
         stud.addCount();
 
-        if(comp.getPair() == nullptr){
-            comp.setPair(&stud);
+        if(comp.getPair() == 0){
+            comp.setPair(stud.getIndex());
+            studCompPair.at(comp.getIndex() - 1) = stud.getIndex();
         }else{
-            OpinionList otherStud = *comp.getPair();
+            OpinionList& otherStud = students.at(comp.getPair() - 1);
+
             if(comp.getPref(stud.getIndex()) < comp.getPref(otherStud.getIndex())){
-                comp.setPair(&stud);
-                students.push_back(otherStud);
+                comp.setPair(stud.getIndex());
+                studCompPair.at(comp.getIndex() - 1) = stud.getIndex();
+                studIndex.push_back(otherStud.getIndex());
+                //cout << "hej1" << std::endl;
             }else{
-                students.push_back(stud);
+                studIndex.push_back(stud.getIndex());
+                //cout << "hej2" << std::endl;
             }
         }
     }
 
-    for(OpinionList o : companies){
-        cout << (o.getPair())->getIndex() << std::endl;
+    // for(OpinionList o : companies){
+    //     cout << (o.getPair())->getIndex() << std::endl;
+    //     //cout << o.getIndex() << std::endl;
+    // }
+    for(int o : studCompPair){
+        cout << o << std::endl;
+        //cout << o.getIndex() << std::endl;
     }
 
     // for(OpinionList o : *companies){

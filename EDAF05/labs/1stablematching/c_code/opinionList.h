@@ -15,7 +15,7 @@ class OpinionList{
     public:
     OpinionList() = default;
 
-    OpinionList(const int n, const int vSize): index(n), pref(vSize), prefSize(vSize), pair(nullptr), count(0){}
+    OpinionList(const int n, const int vSize): index(n), pref(vSize), prefSize(vSize), pair(0), count(0){}
 
     int getIndex(){ return index; }
 
@@ -29,13 +29,15 @@ class OpinionList{
         vector<int> temp(pref.size(),0);
         int n = 1;
         for(int opt : pref){
-            temp.at(opt-1) = n++;
+            temp.at(opt-1) = n;
+            n++;
         }
+        pref = temp;
     }
 
-    void setPair(OpinionList* o){ pair = o; }
+    void setPair(int o){ pair = o; }
 
-    OpinionList* getPair(){ return pair; }
+    int getPair(){ return pair; }
     
     void addCount(){ count++; }
 
@@ -63,7 +65,7 @@ class OpinionList{
     vector<int> pref;
     int prefSize;
     int count;
-    OpinionList* pair;
+    int pair;
 };
 
 #endif
