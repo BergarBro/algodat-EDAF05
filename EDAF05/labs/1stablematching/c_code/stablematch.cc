@@ -27,6 +27,7 @@ int main(){
     vector<OpinionList> companies(N);
     vector<OpinionList> students(N);
     vector<int> studIndex;
+    studIndex.reserve(N);
     vector<int> studCompPair(N);
     vector<int> list(N);
 
