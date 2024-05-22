@@ -177,13 +177,21 @@ int main(){
                 }
             }
         }
-        if(!pathFound || currentNetFlow(vecOfNodes, vecOfEdges) >= goalCapacity){
+        if(!pathFound){// || currentNetFlow(vecOfNodes, vecOfEdges) >= goalCapacity){
             currentNetworkFlow = currentNetFlow(vecOfNodes, vecOfEdges);
             if(!(currentNetworkFlow >= goalCapacity)){
                 break;
             }
             bestNetworkFlow = currentNetworkFlow;
-            vecOfEdges[planToRemove[totalEdgesRemoves++]].maximumCapacity = 0;
+            //vecOfEdges[planToRemove[totalEdgesRemoves++]].maximumCapacity = 0;
+            bool check = true;
+            while(check){
+                int edgeToBeRemoved = planToRemove[totalEdgesRemoves++];
+                vecOfEdges[edgeToBeRemoved].maximumCapacity = 0;
+                if(vecOfEdges[edgeToBeRemoved].currentCapacity != 0){
+                    check = false;
+                }
+            }
             resetFlow(vecOfEdges);
         }else{
             // get max capacity over path
@@ -206,7 +214,7 @@ int main(){
 
         //print(vecOfEdges);
 
-        cout << totalEdgesRemoves-1 << " " << bestNetworkFlow << endl;
+        cout << totalEdgesRemoves-1 << " " << currentNetFlow(vecOfNodes, vecOfEdges) << endl;
 
     }
 
