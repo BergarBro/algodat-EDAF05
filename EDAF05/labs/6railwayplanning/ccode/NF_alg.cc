@@ -73,6 +73,14 @@ void print(std::vector<Node> list){
     }
 }
 
+void print(std::vector<std::pair<int,int>> list){
+    cout << "List of all Pairs to remove:" << endl;
+    for(std::pair<int,int> p : list){
+        cout << "IndexEdge: " << p.first;
+        cout << " MaxCap: " << p.second << endl;
+    }
+}
+
 void resetFlow(std::vector<Edge>& list){
     for(Edge& e : list){
         e.currentCapacity = 0;
@@ -102,7 +110,7 @@ int main(){
 
     std::vector<Node> vecOfNodes(numOfNodes);
     std::vector<Edge> vecOfEdges(numOfEdges);
-    std::vector<int> planToRemove(numToRemove);
+    std::vector<std::pair<int,int>> planToRemove(numToRemove);
 
     for(int i = 0; i < numOfNodes; i++){ vecOfNodes[i].index = i;}      // sets the index of all nodes, maybe not necassery.
 
@@ -130,7 +138,9 @@ int main(){
     for(int i = 0; i < numToRemove; i++){
         int indexToRemove;
         cin >> indexToRemove;
-        planToRemove[i] = indexToRemove;                        // geting all the egeds and theier order of removal
+        int edgeCap = vecOfEdges[indexToRemove].maximumCapacity;
+        planToRemove[i] = std::pair<int,int> (indexToRemove,edgeCap);                        // geting all the egeds and theier order of removal
+        vecOfEdges[indexToRemove].maximumCapacity = 0;
     }
 
     // print(vecOfEdges);
@@ -142,6 +152,7 @@ int main(){
     int currentNetworkFlow = 0;
     int bestNetworkFlow = 0;
     int totalEdgesRemoves = 0;
+    int numLeftToAdd = numToRemove;
 
     while(!done){
         
@@ -191,27 +202,10 @@ int main(){
                 }
             }
         }
-        if(!pathFound){ 
-            currentNetworkFlow = currentNetFlow(vecOfNodes, vecOfEdges);
-            if(!(currentNetworkFlow >= goalCapacity)){                      //checking if, after removing an edge, the currentflow is still more then the goalCapacity
-                break;
-            }
-            bestNetworkFlow = currentNetworkFlow;
 
-            bool check = true;
-            while(check){                               // a while loop to go through more then one edge in the plan
-                int edgeToBeRemoved = planToRemove[totalEdgesRemoves++];
-                vecOfEdges[edgeToBeRemoved].maximumCapacity = 0;
-                if(vecOfEdges[edgeToBeRemoved].currentCapacity != 0){       // if the edge hade capacuity 0 it was not used, so we dont have to run the alg again, just remove another edge
-                    check = false;
-                }
-            }
-            resetFlow(vecOfEdges);                                          // When an edge with "value" to the system is removed, we need to restart the alg 
-        }else{
-            // get max capacity over path
-        
-            int maxCap = std::numeric_limits<int>::max();
-            std::vector<std::pair<int,int>> pathEdges;                       //vector of pair(Edges,front/back-edges) (front = 1, back = -1)
+        int maxCap = std::numeric_limits<int>::max();
+        std::vector<std::pair<int,int>> pathEdges;                       //vector of pair(Edges,front/back-edges) (front = 1, back = -1)
+        if(pathFound){
             int currentNode = numOfNodes - 1;
             while(currentNode != 0){                                            //going through path to find the maximum capacity wa can increas the flow with
                 int currentEdge = path[currentNode].first.second;
@@ -222,21 +216,92 @@ int main(){
                 }
                 currentNode = path[currentNode].first.first;
             }
-
             for(std::pair<int,int> p : pathEdges){                           // going back to all the edges and setting their new currentcapacity
                 vecOfEdges[p.first].currentCapacity += p.second * maxCap;       // if it is a backwardedge, we subcract the maxcapacity
             }
+        }else{
+            currentNetworkFlow = currentNetFlow(vecOfNodes, vecOfEdges);
+            if(currentNetworkFlow >= goalCapacity){
+                bestNetworkFlow = currentNetworkFlow;
+                break;
+            }else{
+                int edgeToAdd = planToRemove[numLeftToAdd - 1].first;
+                vecOfEdges[edgeToAdd].maximumCapacity = planToRemove[numLeftToAdd - 1].second;
+                //cout << "hej " << planToRemove[numLeftToAdd - 1].second << endl;
+                numLeftToAdd--;
+            }
         }
 
-        //print(vecOfEdges);
+        
+        
 
-        //cout << totalEdgesRemoves-1 << " " << currentNetFlow(vecOfNodes, vecOfEdges) << endl;
+        
+
+        
+        // cout << currentNetworkFlow << endl;
+        // if(currentNetworkFlow >= goalCapacity){                      //checking if, after removing an edge, the currentflow is still more then the goalCapacity
+        //     bestNetworkFlow = currentNetworkFlow;
+
+        //     bool check = true;
+        //     while(check){                               // a while loop to go through more then one edge in the plan
+        //         int edgeToBeRemoved = planToRemove[totalEdgesRemoves++];
+        //         vecOfEdges[edgeToBeRemoved].maximumCapacity = 0;
+        //         if(vecOfEdges[edgeToBeRemoved].currentCapacity != 0){       // if the edge hade capacuity 0 it was not used, so we dont have to run the alg again, just remove another edge
+        //             check = false;
+        //             resetFlow(vecOfEdges);
+        //             // for(std::pair<int,int> p : pathEdges){                           // going back to all the edges and setting their new currentcapacity
+        //             //     vecOfEdges[p.first].currentCapacity -= p.second * maxCap;       // if it is a backwardedge, we subcract the maxcapacity
+        //             // }
+        //         }
+        //     }
+        // }
+
+        // if(!pathFound){ 
+        //     currentNetworkFlow = currentNetFlow(vecOfNodes, vecOfEdges);
+        //     if(!(currentNetworkFlow >= goalCapacity)){                      //checking if, after removing an edge, the currentflow is still more then the goalCapacity
+        //         break;
+        //     }
+        //     bestNetworkFlow = currentNetworkFlow;
+
+        //     bool check = true;
+        //     while(check){                               // a while loop to go through more then one edge in the plan
+        //         int edgeToBeRemoved = planToRemove[totalEdgesRemoves++];
+        //         vecOfEdges[edgeToBeRemoved].maximumCapacity = 0;
+        //         if(vecOfEdges[edgeToBeRemoved].currentCapacity != 0){       // if the edge hade capacuity 0 it was not used, so we dont have to run the alg again, just remove another edge
+        //             check = false;
+        //         }
+        //     }
+        //     resetFlow(vecOfEdges);                                          // When an edge with "value" to the system is removed, we need to restart the alg 
+        // }else{
+        //     // get max capacity over path
+        
+        //     int maxCap = std::numeric_limits<int>::max();
+        //     std::vector<std::pair<int,int>> pathEdges;                       //vector of pair(Edges,front/back-edges) (front = 1, back = -1)
+        //     int currentNode = numOfNodes - 1;
+        //     while(currentNode != 0){                                            //going through path to find the maximum capacity wa can increas the flow with
+        //         int currentEdge = path[currentNode].first.second;
+        //         int edgeDirection = path[currentNode].second;
+        //         pathEdges.push_back(std::pair<int,int>(currentEdge,edgeDirection));
+        //         if(maxCap > vecOfEdges[currentEdge].capacityLeft(edgeDirection)){
+        //             maxCap = vecOfEdges[currentEdge].capacityLeft(edgeDirection);
+        //         }
+        //         currentNode = path[currentNode].first.first;
+        //     }
+
+        //     for(std::pair<int,int> p : pathEdges){                           // going back to all the edges and setting their new currentcapacity
+        //         vecOfEdges[p.first].currentCapacity += p.second * maxCap;       // if it is a backwardedge, we subcract the maxcapacity
+        //     }
+        // }
+
+        // print(vecOfEdges);
+        // print(planToRemove);
+        // cout << numLeftToAdd << " curFlow:" << currentNetFlow(vecOfNodes, vecOfEdges) << " goal:" << goalCapacity << endl;
 
     }
 
     //print(vecOfEdges);
 
-    cout << totalEdgesRemoves-1 << " " << bestNetworkFlow << endl;
+    cout << numLeftToAdd << " " << bestNetworkFlow << endl;
 
     return 0;
 }
