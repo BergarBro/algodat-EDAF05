@@ -214,7 +214,7 @@ int main(){
 
         //print(vecOfEdges);
 
-        cout << totalEdgesRemoves-1 << " " << currentNetFlow(vecOfNodes, vecOfEdges) << endl;
+        //cout << totalEdgesRemoves-1 << " " << currentNetFlow(vecOfNodes, vecOfEdges) << endl;
 
     }
 
@@ -224,3 +224,5 @@ int main(){
 
     return 0;
 }
+
+//massa mög här 
