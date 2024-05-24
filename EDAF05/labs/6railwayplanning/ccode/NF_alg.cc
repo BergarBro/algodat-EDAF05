@@ -19,8 +19,9 @@ struct Edge{
     Edge() = default;
     Edge(int i, int one, int two, int cap) : index(i), nodeOne(one), nodeTwo(two), currentCapacity(0), maximumCapacity(cap) {};
 
-    int capacityLeft(){
-        return maximumCapacity-currentCapacity;
+    int capacityLeft(int i){
+
+        return maximumCapacity - i * currentCapacity;
     }
 
     void print(){
@@ -37,6 +38,7 @@ struct Edge{
 struct Node{
     int index;
     std::vector<std::pair<int, int>> connections;               // pair<"index of Node", "index of Edge">
+    std::vector<std::pair<int, int>> backconnections;
 
     Node() = default;
     Node(int i) : index(i) {}
@@ -45,6 +47,10 @@ struct Node{
         cout << "Index: " << index;
         cout << "  Connections(Node,Edge): ";
         for(std::pair<int,int> p : connections){
+            cout << "(" << p.first << "," << p.second << ") ";
+        }
+        cout << "  BackConnections(Node,Edge): ";
+        for(std::pair<int,int> p : backconnections){
             cout << "(" << p.first << "," << p.second << ") ";
         }
         cout << endl;
@@ -126,7 +132,7 @@ int main(){
         // matrixOfMaxCapacity[startNode][endNode] = edgeMaxCapacity;
         // matrixOfMaxCapacity[endNode][startNode] = edgeMaxCapacity;                 // setting the maxcapacity of the edge
         vecOfNodes[startNode].connections.push_back(std::pair<int,int>(endNode,i));   // adding the edge to theier coresponding nodes 
-        vecOfNodes[endNode].connections.push_back(std::pair<int,int>(startNode,i));     // adding the edge to theier coresponding nodes 
+        vecOfNodes[endNode].backconnections.push_back(std::pair<int,int>(startNode,i));     // adding the edge to theier coresponding nodes 
     }
 
     for(int i = 0; i < numToRemove; i++){
@@ -148,7 +154,7 @@ int main(){
     while(!done){
         
 
-        std::vector<std::pair<int,int>> path(numOfNodes);
+        std::vector<std::pair<std::pair<int,int>,int>> path(numOfNodes);            //vector of pair(pair(Node,Edge),front/back)
         //BFS function
         
         std::vector<bool> explored(numOfNodes, false);
@@ -166,55 +172,71 @@ int main(){
                 pathFound = true;
                 break;
             }
-            for(std::pair<int,int> nodeEdgePair : vecOfNodes[currentNode].connections){
-                if(vecOfEdges[nodeEdgePair.second].currentCapacity != vecOfEdges[nodeEdgePair.second].maximumCapacity){
+            bool foundEdge = false;
+            for(std::pair<int,int> nodeEdgePair : vecOfNodes[currentNode].connections){                     //Going through the front-edges 
+                if(vecOfEdges[nodeEdgePair.second].capacityLeft(1) != 0){     //Checking if edge capacity is maxed in the front-direction
                     int tempNode = nodeEdgePair.first;
-                    if(!explored[tempNode]){
+                    if(!explored[tempNode]){                        //checking if the node has been explored yet.
                         explored[tempNode] = true;
-                        path[tempNode] = std::pair<int,int>(currentNode, nodeEdgePair.second);
-                        que.push(tempNode);
+                        std::pair<int,int> tempPair = std::pair<int,int>(currentNode, nodeEdgePair.second);
+                        path[tempNode] = std::pair<std::pair<int,int>,int>(tempPair,1);     //if the edge has capacity and the node is not exlored, it gets added to the current path
+                        que.push(tempNode);                                                 // the new node gets added to the que to get checked
+                        foundEdge = true;
+                    }
+                }
+            }
+            if(!foundEdge){                                                                                 //Going through the backwards-edges 
+                for(std::pair<int,int> nodeEdgePair : vecOfNodes[currentNode].backconnections){
+                    if(vecOfEdges[nodeEdgePair.second].capacityLeft(-1) != 0){ //Checking if edge capacity is maxed in the backward-direction
+                        int tempNode = nodeEdgePair.first;
+                        if(!explored[tempNode]){
+                            explored[tempNode] = true;
+                            std::pair<int,int> tempPair = std::pair<int,int>(currentNode, nodeEdgePair.second);
+                            path[tempNode] = std::pair<std::pair<int,int>,int>(tempPair,-1);
+                            que.push(tempNode);
+                        }
                     }
                 }
             }
         }
-        if(!pathFound){// || currentNetFlow(vecOfNodes, vecOfEdges) >= goalCapacity){
+        if(!pathFound){ // || currentNetFlow(vecOfNodes, vecOfEdges) >= goalCapacity){
             currentNetworkFlow = currentNetFlow(vecOfNodes, vecOfEdges);
             if(!(currentNetworkFlow >= goalCapacity)){
                 break;
             }
             bestNetworkFlow = currentNetworkFlow;
-            //vecOfEdges[planToRemove[totalEdgesRemoves++]].maximumCapacity = 0;
+
             bool check = true;
-            while(check){
+            while(check){                               // a while loop to go through more then one edge in the plan
                 int edgeToBeRemoved = planToRemove[totalEdgesRemoves++];
                 vecOfEdges[edgeToBeRemoved].maximumCapacity = 0;
-                if(vecOfEdges[edgeToBeRemoved].currentCapacity != 0){
+                if(vecOfEdges[edgeToBeRemoved].currentCapacity != 0){       // if the edge hade capacuity 0 it was not used, so we dont have to run the alg again, just remove another edge
                     check = false;
                 }
             }
-            resetFlow(vecOfEdges);
+            resetFlow(vecOfEdges);                                          // When an edge with "value" to the system is removed, we need to restart the alg 
         }else{
             // get max capacity over path
         
             int maxCap = std::numeric_limits<int>::max();
-            std::vector<int> currentEdges;
+            std::vector<std::pair<int,int>> currentEdges;                       //vector of pair(Edges,front/back-edges) (front = 1, back = -1)
             int currentNode = numOfNodes - 1;
-            while(currentNode != 0){
-                currentEdges.push_back(path[currentNode].second);
-                if(maxCap > vecOfEdges[path[currentNode].second].capacityLeft()){
-                    maxCap = vecOfEdges[path[currentNode].second].capacityLeft();
+            while(currentNode != 0){                                            //going through path to find the maximum capacity wa can encreas the flow with
+                currentEdges.push_back(std::pair<int,int>(path[currentNode].first.second,path[currentNode].second));
+                if(maxCap > vecOfEdges[path[currentNode].first.second].capacityLeft(path[currentNode].second)){
+                    maxCap = vecOfEdges[path[currentNode].first.second].capacityLeft(path[currentNode].second);
                 }
-                currentNode = path[currentNode].first;
+                currentNode = path[currentNode].first.first;
             }
 
-            for(int edges : currentEdges){
-                vecOfEdges[edges].currentCapacity += maxCap;
+            for(std::pair<int,int> p : currentEdges){                           // going back to all the edges and setting theri new currentcapacity
+                vecOfEdges[p.first].currentCapacity += p.second * maxCap;       // if it is a backwardedge, we subcract the maxcapacity
             }
         }
 
         //print(vecOfEdges);
 
-        //cout << totalEdgesRemoves-1 << " " << currentNetFlow(vecOfNodes, vecOfEdges) << endl;
+        cout << totalEdgesRemoves-1 << " " << currentNetFlow(vecOfNodes, vecOfEdges) << endl;
 
     }
 
